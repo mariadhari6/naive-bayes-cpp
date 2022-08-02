@@ -28,7 +28,7 @@ int main(int argc, char const *argv[])
     const string dates[] = {"Mondays", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     const string months[] = {"January", "February", "March", "April", "Mei", "June", "July", "August", "September", "October", "Novenber", "December"};
     const string days[] = {"Weekdays", "Holiday", "Weekend"};
-    shopping shoppings_sheet[10];
+    shopping shoppings_sheet[100];
 
     // Create random datasheet
     for (int i = 0; i < (sizeof(shoppings_sheet) / sizeof(*shoppings_sheet)) - 1; i++)
@@ -41,7 +41,6 @@ int main(int argc, char const *argv[])
         data.free_delivery = rand() % 2 == 0 ? "yes" : "no";
         data.buy = rand() % 2 == 0 ? "yes" : "no";
         shoppings_sheet[i] = data;
-        cout << data.buy << endl;
     }
 
     // Create Discont Frequency
@@ -66,5 +65,29 @@ int main(int argc, char const *argv[])
             }
         }
     }
+
+    // Create Free Delivery Frequency
+    frequency delivery_frequency;
+    delivery_frequency.label = "Free Delivery";
+    delivery_frequency.events[0].name = "yes";
+    delivery_frequency.events[1].name = "no";
+    for (int i = 0; i < (sizeof(shoppings_sheet) / sizeof(*shoppings_sheet)) - 1; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            if (delivery_frequency.events[j].name.compare(shoppings_sheet[i].free_delivery) == 0)
+            {
+                if (shoppings_sheet[i].buy.compare("yes") == 0)
+                {
+                    delivery_frequency.events[j].buys.yes++;
+                }
+                else
+                {
+                    delivery_frequency.events[j].buys.no++;
+                }
+            }
+        }
+    }
+
     return 0;
 }
