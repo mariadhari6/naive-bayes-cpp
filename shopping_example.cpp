@@ -50,8 +50,9 @@ void drawFrequencyDelivery(frequency delivery_frequency)
     }
     cout << "|_______________|_______________|___________" << endl;
 }
-void drawFrequencyDiscount(frequency discount_frequency) {
-     cout << "____________________________________" << endl;
+void drawFrequencyDiscount(frequency discount_frequency)
+{
+    cout << "____________________________________" << endl;
     cout << "|          |            |           " << endl;
     cout << "| " << discount_frequency.label << " |  Buy\t|   No" << endl;
     cout << "|__________|____________|___________" << endl;
@@ -158,6 +159,37 @@ int main(int argc, char const *argv[])
     drawFrequencyDays(days_frequency);
     // Draw Free Delivery Frequency Table
     drawFrequencyDelivery(delivery_frequency);
+
+    /**
+     * Let us calculate some conditional probabilities:
+     * P(B) = P(Weekday)
+     * = total days probabilities / total data
+     */
+    double days_probabilities[3] = {0, 0, 0};
+    double totalDaysProbabilities[3] = {0, 0, 0};
+    for (int i = 0; i < sizeof(totalDaysProbabilities) / sizeof(*totalDaysProbabilities); i++)
+    {
+        totalDaysProbabilities[i] = days_frequency.events[i].buys.yes + days_frequency.events[i].buys.no;
+    }
+    cout<<"\n....:: Days Frequency Probabilities ::....\n";
+    for (int i = 0; i < sizeof(totalDaysProbabilities) / sizeof(*totalDaysProbabilities); i++)
+    {
+        days_probabilities[i] = totalDaysProbabilities[i] / (double(sizeof(shoppings_sheet) / sizeof(*shoppings_sheet)) - 1);
+        cout <<days_frequency.events[i].name<<"\t\t=> "<< days_probabilities[i] << endl;
+    }
+
+    /**
+     * P(A) = P(No Buy)
+     * = total no buys / total data
+     */
+    double noBuyDays = 0;
+    for (int i = 0; i < sizeof(days) / sizeof(*days); i++)
+    {
+        noBuyDays += days_frequency.events[i].buys.no;
+    }
+    double daysNoBuyProbablility = noBuyDays / (double(sizeof(shoppings_sheet) / sizeof(*shoppings_sheet)) - 1);
+    cout<<"\nDidn't Buy\t=> "<<daysNoBuyProbablility<<endl;
+    
 
     return 0;
 }
