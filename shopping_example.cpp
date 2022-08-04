@@ -25,11 +25,7 @@ struct frequency
 };
 void drawFrequencyDays(frequency days_frequency)
 {
-    for (int i = 0; i < 36; i++)
-    {
-        cout << "_";
-    }
-    cout << endl;
+    cout << "____________________________________" << endl;
     cout << "|         |             |           " << endl;
     cout << "| " << days_frequency.label << "    |  Buy\t|   No" << endl;
     cout << "|_________|_____________|___________" << endl;
@@ -39,6 +35,20 @@ void drawFrequencyDays(frequency days_frequency)
         cout << "| " << days_frequency.events[i].name << " |  " << days_frequency.events[i].buys.yes << "\t|  " << days_frequency.events[i].buys.no << " " << endl;
     }
     cout << "|_________|_____________|___________" << endl;
+}
+void drawFrequencyDelivery(frequency delivery_frequency)
+{
+
+    cout << "____________________________________________" << endl;
+    cout << "|               |               |           " << endl;
+    cout << "| " << delivery_frequency.label << "\t|  Buy\t\t|  No" << endl;
+    cout << "|_______________|_______________|___________" << endl;
+    cout << "|               |               |           " << endl;
+    for (int i = 0; i < 2; i++)
+    {
+        cout << "| " << delivery_frequency.events[i].name << "\t\t|  " << delivery_frequency.events[i].buys.yes << "\t\t|  " << delivery_frequency.events[i].buys.no << " " << endl;
+    }
+    cout << "|_______________|_______________|___________" << endl;
 }
 int main(int argc, char const *argv[])
 {
@@ -130,8 +140,9 @@ int main(int argc, char const *argv[])
             }
         }
     }
-
-    // Draw Days Frequency Table
+    // Draw Free Delivery Table Frequency
+    drawFrequencyDelivery(delivery_frequency);
+    // Draw Days Frequency Table Frequency
     drawFrequencyDays(days_frequency);
 
     return 0;
