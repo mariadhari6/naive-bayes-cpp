@@ -50,6 +50,18 @@ void drawFrequencyDelivery(frequency delivery_frequency)
     }
     cout << "|_______________|_______________|___________" << endl;
 }
+void drawFrequencyDiscount(frequency discount_frequency) {
+     cout << "____________________________________" << endl;
+    cout << "|          |            |           " << endl;
+    cout << "| " << discount_frequency.label << " |  Buy\t|   No" << endl;
+    cout << "|__________|____________|___________" << endl;
+    cout << "|          |            |           " << endl;
+    for (int i = 0; i < 2; i++)
+    {
+        cout << "| " << discount_frequency.events[i].name << "\t   |  " << discount_frequency.events[i].buys.yes << "\t|  " << discount_frequency.events[i].buys.no << " " << endl;
+    }
+    cout << "|__________|____________|___________" << endl;
+}
 int main(int argc, char const *argv[])
 {
     const string dates[] = {"Mondays", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
@@ -140,10 +152,12 @@ int main(int argc, char const *argv[])
             }
         }
     }
-    // Draw Free Delivery Table Frequency
-    drawFrequencyDelivery(delivery_frequency);
-    // Draw Days Frequency Table Frequency
+    // Draw Discount Frequency Table
+    drawFrequencyDiscount(discount_frequency);
+    // Draw Days Frequency Table
     drawFrequencyDays(days_frequency);
+    // Draw Free Delivery Frequency Table
+    drawFrequencyDelivery(delivery_frequency);
 
     return 0;
 }
