@@ -23,12 +23,29 @@ struct frequency
     string label;
     event events[5];
 };
+void drawFrequencyDays(frequency days_frequency)
+{
+    for (int i = 0; i < 36; i++)
+    {
+        cout << "_";
+    }
+    cout << endl;
+    cout << "|         |             |           " << endl;
+    cout << "| " << days_frequency.label << "    |  Buy\t|   No" << endl;
+    cout << "|_________|_____________|___________" << endl;
+    cout << "|         |             |           " << endl;
+    for (int i = 0; i < 3; i++)
+    {
+        cout << "| " << days_frequency.events[i].name << " |  " << days_frequency.events[i].buys.yes << "\t|  " << days_frequency.events[i].buys.no << " " << endl;
+    }
+    cout << "|_________|_____________|___________" << endl;
+}
 int main(int argc, char const *argv[])
 {
     const string dates[] = {"Mondays", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     const string months[] = {"January", "February", "March", "April", "Mei", "June", "July", "August", "September", "October", "Novenber", "December"};
-    const string days[] = {"Weekdays", "Holiday", "Weekend"};
-    shopping shoppings_sheet[100];
+    const string days[] = {"Weekday", "Holiday", "Weekend"};
+    shopping shoppings_sheet[10000];
 
     // Create random datasheet
     for (int i = 0; i < (sizeof(shoppings_sheet) / sizeof(*shoppings_sheet)) - 1; i++)
@@ -88,6 +105,34 @@ int main(int argc, char const *argv[])
             }
         }
     }
+
+    // Create Days Frequency
+    frequency days_frequency;
+    days_frequency.label = "Days";
+    for (int i = 0; i < sizeof(days) / sizeof(*days); i++)
+    {
+        days_frequency.events[i].name = days[i];
+    }
+    for (int i = 0; i < (sizeof(shoppings_sheet) / sizeof(*shoppings_sheet)) - 1; i++)
+    {
+        for (int j = 0; j < sizeof(days) / sizeof(*days); j++)
+        {
+            if (days_frequency.events[j].name.compare(shoppings_sheet[i].day) == 0)
+            {
+                if (shoppings_sheet[i].buy.compare("yes") == 0)
+                {
+                    days_frequency.events[j].buys.yes++;
+                }
+                else
+                {
+                    days_frequency.events[j].buys.no++;
+                }
+            }
+        }
+    }
+
+    // Draw Days Frequency Table
+    drawFrequencyDays(days_frequency);
 
     return 0;
 }
