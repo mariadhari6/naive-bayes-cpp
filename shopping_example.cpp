@@ -191,12 +191,14 @@ int main(int argc, char const *argv[])
     cout << "\nDidn't Buy\t=> " << daysNoBuyProbablility << endl;
 
     /**
+     * P(B | A)
      * P(Weekday | No Buy)
      * P(Holiday | No Buy)
      * P(Weekend | No Buy)
      * = Didn't buy on weekday / Total didn't buy
      * => Calculate the probability of not buying on all days
      */
+
     double probNoBuyDays[3];
     for (int i = 0; i < sizeof(probNoBuyDays) / sizeof(*probNoBuyDays); i++)
     {
@@ -204,5 +206,30 @@ int main(int argc, char const *argv[])
         cout << "Probabilities of not buying on " << days_frequency.events[i].name << "\t: " << probNoBuyDays[i] << endl;
     }
 
+    /**
+     * P(A | B)
+     *
+     * = P(No Buy | Weekday)
+     * = P(Weekday | No Buy) * P(No Buy) / P(Weekday)
+     * Calculate probability of not buying on every weekday
+     *
+     * = P(No Buy | Holiday)
+     * = P(Holiday | No Buy) * P(No Buy) / P(Holiday)
+     * Calculate probability of not buying on every holiday
+     *
+     * = P(No Buy | Weekend) * P(No Buy) / P(Weekend)
+     * = P(Weekend | No Buy) * P(No Buy) / P(Weekend)
+     * Calculate probability of not buying on every weekend
+     *
+     * => Calculate probability of not buying on a daily basis
+     */
+    double probNoBuyDaily[3];
+    cout << endl
+         << "....:: Probabilities of not buying on a daily basis ::....\n";
+    for (int i = 0; i < sizeof(probNoBuyDaily) / sizeof(*probNoBuyDaily); i++)
+    {
+        probNoBuyDaily[i] = (probNoBuyDays[i] * daysNoBuyProbablility) / days_probabilities[i];
+        cout << days_frequency.events[i].name << "\t=> " << probNoBuyDaily[i] << endl;
+    }
     return 0;
 }
