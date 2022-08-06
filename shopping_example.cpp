@@ -171,11 +171,11 @@ int main(int argc, char const *argv[])
     {
         totalDaysProbabilities[i] = days_frequency.events[i].buys.yes + days_frequency.events[i].buys.no;
     }
-    cout<<"\n....:: Days Frequency Probabilities ::....\n";
+    cout << "\n....:: Days Frequency Probabilities ::....\n";
     for (int i = 0; i < sizeof(totalDaysProbabilities) / sizeof(*totalDaysProbabilities); i++)
     {
         days_probabilities[i] = totalDaysProbabilities[i] / (double(sizeof(shoppings_sheet) / sizeof(*shoppings_sheet)) - 1);
-        cout <<days_frequency.events[i].name<<"\t\t=> "<< days_probabilities[i] << endl;
+        cout << days_frequency.events[i].name << "\t\t=> " << days_probabilities[i] << endl;
     }
 
     /**
@@ -188,8 +188,21 @@ int main(int argc, char const *argv[])
         noBuyDays += days_frequency.events[i].buys.no;
     }
     double daysNoBuyProbablility = noBuyDays / (double(sizeof(shoppings_sheet) / sizeof(*shoppings_sheet)) - 1);
-    cout<<"\nDidn't Buy\t=> "<<daysNoBuyProbablility<<endl;
-    
+    cout << "\nDidn't Buy\t=> " << daysNoBuyProbablility << endl;
+
+    /**
+     * P(Weekday | No Buy)
+     * P(Holiday | No Buy)
+     * P(Weekend | No Buy)
+     * = Didn't buy on weekday / Total didn't buy
+     * => Calculate the probability of not buying on all days
+     */
+    double probNoBuyDays[3];
+    for (int i = 0; i < sizeof(probNoBuyDays) / sizeof(*probNoBuyDays); i++)
+    {
+        probNoBuyDays[i] = days_frequency.events[i].buys.no / noBuyDays;
+        cout << "Probabilities of not buying on " << days_frequency.events[i].name << "\t: " << probNoBuyDays[i] << endl;
+    }
 
     return 0;
 }
