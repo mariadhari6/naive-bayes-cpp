@@ -23,50 +23,17 @@ struct frequency
     string label;
     event events[5];
 };
-void drawFrequencyDays(frequency days_frequency)
-{
-    cout << "____________________________________" << endl;
-    cout << "|         |             |           " << endl;
-    cout << "| " << days_frequency.label << "    |  Buy\t|   No" << endl;
-    cout << "|_________|_____________|___________" << endl;
-    cout << "|         |             |           " << endl;
-    for (int i = 0; i < 3; i++)
-    {
-        cout << "| " << days_frequency.events[i].name << " |  " << days_frequency.events[i].buys.yes << "\t|  " << days_frequency.events[i].buys.no << " " << endl;
-    }
-    cout << "|_________|_____________|___________" << endl;
-}
-void drawFrequencyDelivery(frequency delivery_frequency)
-{
-
-    cout << "____________________________________________" << endl;
-    cout << "|               |               |           " << endl;
-    cout << "| " << delivery_frequency.label << "\t|  Buy\t\t|  No" << endl;
-    cout << "|_______________|_______________|___________" << endl;
-    cout << "|               |               |           " << endl;
-    for (int i = 0; i < 2; i++)
-    {
-        cout << "| " << delivery_frequency.events[i].name << "\t\t|  " << delivery_frequency.events[i].buys.yes << "\t\t|  " << delivery_frequency.events[i].buys.no << " " << endl;
-    }
-    cout << "|_______________|_______________|___________" << endl;
-}
-void drawFrequencyDiscount(frequency discount_frequency)
-{
-    cout << "____________________________________" << endl;
-    cout << "|          |            |           " << endl;
-    cout << "| " << discount_frequency.label << " |  Buy\t|   No" << endl;
-    cout << "|__________|____________|___________" << endl;
-    cout << "|          |            |           " << endl;
-    for (int i = 0; i < 2; i++)
-    {
-        cout << "| " << discount_frequency.events[i].name << "\t   |  " << discount_frequency.events[i].buys.yes << "\t|  " << discount_frequency.events[i].buys.no << " " << endl;
-    }
-    cout << "|__________|____________|___________" << endl;
-}
+void drawFrequencyDays(frequency days_frequency);
+void drawFrequencyDelivery(frequency delivery_frequency);
+void drawFrequencyDiscount(frequency discount_frequency);
+void drawLikeHoodDays(frequency days_frequency);
 int main(int argc, char const *argv[])
 {
     const string dates[] = {"Mondays", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
-    const string months[] = {"January", "February", "March", "April", "Mei", "June", "July", "August", "September", "October", "Novenber", "December"};
+    const string months[] = {
+        "January", "February", "March", "April", "Mei",
+        "June", "July", "August", "September", "October",
+        "Novenber", "December"};
     const string days[] = {"Weekday", "Holiday", "Weekend"};
     shopping shoppings_sheet[10000];
 
@@ -163,18 +130,22 @@ int main(int argc, char const *argv[])
     /**
      * Let us calculate some conditional probabilities:
      * P(B) = P(Weekday)
-     * = total days probabilities / total data
+     * = total daily customers / total data
+     *
+     * The probability of purchasing on the weekday = total customers on weekday / total customers
+     * The probability of purchasing on the holiday = total customers on holiday / total customers
+     * The probability of purchasing on the weekend = total customers on weekend / total customers
      */
     double days_probabilities[3] = {0, 0, 0};
-    double totalDaysProbabilities[3] = {0, 0, 0};
-    for (int i = 0; i < sizeof(totalDaysProbabilities) / sizeof(*totalDaysProbabilities); i++)
+    double totalDailyCustomers[3] = {0, 0, 0};
+    for (int i = 0; i < sizeof(totalDailyCustomers) / sizeof(*totalDailyCustomers); i++)
     {
-        totalDaysProbabilities[i] = days_frequency.events[i].buys.yes + days_frequency.events[i].buys.no;
+        totalDailyCustomers[i] = days_frequency.events[i].buys.yes + days_frequency.events[i].buys.no;
     }
     cout << "\n....:: Days Frequency Probabilities ::....\n";
-    for (int i = 0; i < sizeof(totalDaysProbabilities) / sizeof(*totalDaysProbabilities); i++)
+    for (int i = 0; i < sizeof(totalDailyCustomers) / sizeof(*totalDailyCustomers); i++)
     {
-        days_probabilities[i] = totalDaysProbabilities[i] / (double(sizeof(shoppings_sheet) / sizeof(*shoppings_sheet)) - 1);
+        days_probabilities[i] = totalDailyCustomers[i] / (double(sizeof(shoppings_sheet) / sizeof(*shoppings_sheet)) - 1);
         cout << days_frequency.events[i].name << "\t\t=> " << days_probabilities[i] << endl;
     }
 
@@ -231,5 +202,92 @@ int main(int argc, char const *argv[])
         probNoBuyDaily[i] = (probNoBuyDays[i] * daysNoBuyProbablility) / days_probabilities[i];
         cout << days_frequency.events[i].name << "\t=> " << probNoBuyDaily[i] << endl;
     }
+
+    /**
+     * Finally, we look at the probability of B (i.e., weekdays) when no purchase occurs.
+     * If the probability of the weekday without a purchase less or 50%, the customer will most likely buy the product on a weekday.
+     * We have the frequency tables of all three independent variables, and we can construct the tables for all the three variables.
+     * See the likelihood tables for the three variables below:
+     *
+     */
+    cout << endl
+         << "....:: Draw Likehood Table Probabilities ::....\n";
+    drawLikeHoodDays(days_frequency);
     return 0;
+}
+
+void drawFrequencyDays(frequency days_frequency)
+{
+    cout << "____________________________________" << endl;
+    cout << "|         |             |           " << endl;
+    cout << "| " << days_frequency.label << "    |  Buy\t|   No" << endl;
+    cout << "|_________|_____________|___________" << endl;
+    cout << "|         |             |           " << endl;
+    for (int i = 0; i < 3; i++)
+    {
+        cout << "| " << days_frequency.events[i].name << " |  "
+             << days_frequency.events[i].buys.yes << "\t|  "
+             << days_frequency.events[i].buys.no << " " << endl;
+    }
+    cout << "|_________|_____________|___________" << endl;
+}
+void drawFrequencyDelivery(frequency delivery_frequency)
+{
+
+    cout << "____________________________________________" << endl;
+    cout << "|               |               |           " << endl;
+    cout << "| " << delivery_frequency.label << "\t|  Buy\t\t|  No" << endl;
+    cout << "|_______________|_______________|___________" << endl;
+    cout << "|               |               |           " << endl;
+    for (int i = 0; i < 2; i++)
+    {
+        cout << "| " << delivery_frequency.events[i].name << "\t\t|  "
+             << delivery_frequency.events[i].buys.yes << "\t\t|  "
+             << delivery_frequency.events[i].buys.no << " " << endl;
+    }
+    cout << "|_______________|_______________|___________" << endl;
+}
+void drawFrequencyDiscount(frequency discount_frequency)
+{
+    cout << "____________________________________" << endl;
+    cout << "|          |            |           " << endl;
+    cout << "| " << discount_frequency.label << " |  Buy\t|   No" << endl;
+    cout << "|__________|____________|___________" << endl;
+    cout << "|          |            |           " << endl;
+    for (int i = 0; i < 2; i++)
+    {
+        cout << "| " << discount_frequency.events[i].name << "\t   |  "
+             << discount_frequency.events[i].buys.yes << "\t|  "
+             << discount_frequency.events[i].buys.no << " " << endl;
+    }
+    cout << "|__________|____________|___________" << endl;
+}
+void drawLikeHoodDays(frequency days_frequency)
+{
+    int totalBuys = 0, totalNoBuys = 0;
+    for (int i = 0; i < 3; i++)
+    {
+        totalBuys += days_frequency.events[i].buys.yes;
+        totalNoBuys += days_frequency.events[i].buys.no;
+    }
+
+    cout << "______________________________________________________" << endl;
+    cout << "|         |             |               |             " << endl;
+    cout << "| " << days_frequency.label << "    |  Buy\t|  No\t\t|" << endl;
+    cout << "|_________|_____________|_______________|_____________" << endl;
+    cout << "|         |             |               |             " << endl;
+    for (int i = 0; i < 3; i++)
+    {
+        cout << "| " << days_frequency.events[i].name << " |  "
+             << days_frequency.events[i].buys.yes << "/" << totalBuys
+             << "\t|  " << days_frequency.events[i].buys.no << "/" << totalNoBuys << "\t|  "
+             << days_frequency.events[i].buys.yes + days_frequency.events[i].buys.no
+             << "/" << totalBuys + totalNoBuys << endl;
+    }
+    cout << "|_________|_____________|_______________|_____________" << endl;
+    cout << "|         |             |               |             " << endl;
+    cout << "|         |  " << totalBuys << "/" << totalBuys + totalNoBuys
+         << "\t|  " << totalNoBuys << "/" << totalBuys + totalNoBuys
+         << "\t|             " << endl;
+    cout << "|_________|_____________|_______________|_____________" << endl;
 }
