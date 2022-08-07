@@ -27,6 +27,7 @@ void drawFrequencyDays(frequency days_frequency);
 void drawFrequencyDelivery(frequency delivery_frequency);
 void drawFrequencyDiscount(frequency discount_frequency);
 void drawLikeHoodDays(frequency days_frequency);
+void drawLikeHoodDelivery(frequency delivery_frequency);
 int main(int argc, char const *argv[])
 {
     const string dates[] = {"Mondays", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
@@ -213,6 +214,7 @@ int main(int argc, char const *argv[])
     cout << endl
          << "....:: Draw Likehood Table Probabilities ::....\n";
     drawLikeHoodDays(days_frequency);
+    drawLikeHoodDelivery(delivery_frequency);
     return 0;
 }
 
@@ -290,4 +292,32 @@ void drawLikeHoodDays(frequency days_frequency)
          << "\t|  " << totalNoBuys << "/" << totalBuys + totalNoBuys
          << "\t|             " << endl;
     cout << "|_________|_____________|_______________|_____________" << endl;
+}
+void drawLikeHoodDelivery(frequency delivery_frequency)
+{
+    int totalBuys = 0, totalNoBuys = 0;
+    for (int i = 0; i < 2; i++)
+    {
+        totalBuys += delivery_frequency.events[i].buys.yes;
+        totalNoBuys += delivery_frequency.events[i].buys.no;
+    }
+
+    cout << "______________________________________________________________" << endl;
+    cout << "|               |               |               |" << endl;
+    cout << "| " << delivery_frequency.label << "\t|  Buy\t\t|  No\t\t|" << endl;
+    cout << "|_______________|_______________|_______________|_____________" << endl;
+    cout << "|               |               |               |" << endl;
+    for (int i = 0; i < 2; i++)
+    {
+        cout << "| " << delivery_frequency.events[i].name << "\t\t|  "
+             << delivery_frequency.events[i].buys.yes << "/" << totalBuys
+             << "\t|  " << delivery_frequency.events[i].buys.no << "/" << totalNoBuys << "\t|  "
+             << delivery_frequency.events[i].buys.yes + delivery_frequency.events[i].buys.no
+             << "/" << totalBuys + totalNoBuys << endl;
+    }
+    cout << "|_______________|_______________|_______________|_____________" << endl;
+    cout << "|               |               |               |             " << endl;
+    cout << "|               |  " << totalBuys << "/" << totalBuys + totalNoBuys << "\t|  "
+         << totalNoBuys << "/" << totalBuys + totalNoBuys << "\t|             " << endl;
+    cout << "|_______________|_______________|_______________|_____________" << endl;
 }
