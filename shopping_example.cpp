@@ -28,6 +28,7 @@ void drawFrequencyDelivery(frequency delivery_frequency);
 void drawFrequencyDiscount(frequency discount_frequency);
 void drawLikeHoodDays(frequency days_frequency);
 void drawLikeHoodDelivery(frequency delivery_frequency);
+void drawLikeHoodDiscount(frequency discount_frequency);
 int main(int argc, char const *argv[])
 {
     const string dates[] = {"Mondays", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
@@ -215,6 +216,7 @@ int main(int argc, char const *argv[])
          << "....:: Draw Likehood Table Probabilities ::....\n";
     drawLikeHoodDays(days_frequency);
     drawLikeHoodDelivery(delivery_frequency);
+    drawLikeHoodDiscount(discount_frequency);
     return 0;
 }
 
@@ -320,4 +322,32 @@ void drawLikeHoodDelivery(frequency delivery_frequency)
     cout << "|               |  " << totalBuys << "/" << totalBuys + totalNoBuys << "\t|  "
          << totalNoBuys << "/" << totalBuys + totalNoBuys << "\t|             " << endl;
     cout << "|_______________|_______________|_______________|_____________" << endl;
+}
+void drawLikeHoodDiscount(frequency discount_frequency)
+{
+    int totalBuys = 0, totalNoBuys = 0;
+    for (int i = 0; i < 2; i++)
+    {
+        totalBuys += discount_frequency.events[i].buys.yes;
+        totalNoBuys += discount_frequency.events[i].buys.no;
+    }
+
+    cout << "_____________________________________________________" << endl;
+    cout << "|          |              |             |            " << endl;
+    cout << "| " << discount_frequency.label << " |  Buy\t  |   No\t|" << endl;
+    cout << "|__________|______________|_____________|____________" << endl;
+    cout << "|          |              |             |            " << endl;
+    for (int i = 0; i < 2; i++)
+    {
+        cout << "| " << discount_frequency.events[i].name << "\t   |  "
+             << discount_frequency.events[i].buys.yes << "/" << totalBuys
+             << "\t  |  " << discount_frequency.events[i].buys.no << "/" << totalNoBuys << "\t|  "
+             << discount_frequency.events[i].buys.yes + discount_frequency.events[i].buys.no
+             << "/" << totalBuys + totalNoBuys << endl;
+    }
+    cout << "|__________|______________|_____________|_____________" << endl;
+    cout << "|          |              |             |             " << endl;
+    cout << "|          |  " << totalBuys << "/" << totalBuys + totalNoBuys << "\t  |  "
+         << totalNoBuys << "/" << totalBuys + totalNoBuys << "\t|             " << endl;
+    cout << "|__________|______________|_____________|_____________" << endl;
 }
