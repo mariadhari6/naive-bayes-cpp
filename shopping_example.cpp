@@ -217,6 +217,41 @@ int main(int argc, char const *argv[])
     drawLikeHoodDays(days_frequency);
     drawLikeHoodDelivery(delivery_frequency);
     drawLikeHoodDiscount(discount_frequency);
+
+    /**
+     * The likelihood tables can be used to calculate whether
+     * a customer will purchase a product on a specific combination
+     * of the day when there is a discount and whether there is
+     * free delivery. Consider a combination of the following factors where B equals:
+     *
+     * Day = Holiday
+     * Discount = Yes
+     * Free Delivery = Yes
+     */
+    shopping B;
+    B.date = "Sunday, 12 August 2022";
+    B.day = days[1];
+    B.discount = "yes";
+    B.free_delivery = "yes";
+    double A = noBuyDays;
+
+    /**
+     * Let us find the probability of them not purchasing based on the conditions above.
+     * A = No Purchase
+     * Applying Bayes Theorem, we get P(A | B) as shown:
+     *   P(A | B) = P(No Buy | Discount=yes, Free Delivery=yes, Day=Holiday)
+     * = P(Discount = yes | No) * P(Free Delivery = yes | No) * P(Day = Holiday | No) * P(No Buy)
+     */
+    double discountProbability = discount_frequency.events[0].buys.no / noBuyDays;
+    double deliveryProbability = delivery_frequency.events[0].buys.no / noBuyDays;
+    double dayProbability = days_frequency.events[1].buys.no / noBuyDays;
+    double noBuyProbability = noBuyDays / ((sizeof(shoppings_sheet) / sizeof(*shoppings_sheet)) - 1);
+    double result = discountProbability * deliveryProbability * dayProbability * noBuyProbability;
+    double discountYesProbabilty = double(discount_frequency.events[0].buys.yes + discount_frequency.events[0].buys.no) / ((sizeof(shoppings_sheet) / sizeof(*shoppings_sheet)) - 1);
+    double freeDelieryYesProbability = double(delivery_frequency.events[0].buys.yes + delivery_frequency.events[0].buys.no) / ((sizeof(shoppings_sheet) / sizeof(*shoppings_sheet)) - 1);
+    double dayHolidayProbability = double(days_frequency.events[1].buys.yes + days_frequency.events[1].buys.no) / ((sizeof(shoppings_sheet) / sizeof(*shoppings_sheet)) - 1);
+    result /= (discountYesProbabilty * freeDelieryYesProbability * dayHolidayProbability);
+    cout << "Result => " << result << endl;
     return 0;
 }
 
